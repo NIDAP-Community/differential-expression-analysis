@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here.
 
-## Unreleased
+## 2026-10-25 — v0.1.0
 
 - Established the standalone Container-as-a-Function application boundary for
   tabular raw-count differential-expression analysis, with explicit `/data`
@@ -20,7 +20,7 @@ All notable changes to this project are documented here.
 
 ## Release policy
 
-No versioned application image, Git tag, or GitHub Release has been published
-yet. A release requires an explicit version decision, a clean source commit,
+Each release requires an explicit version decision, a clean source commit,
 successful CI, a linux/amd64 image validation, and publication of an immutable
-image digest.
+image digest. The versioned GitHub Release is the authoritative record of the
+published image digest.
