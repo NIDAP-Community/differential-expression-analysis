@@ -6,6 +6,10 @@ released image by digest. Do not pass database credentials, host paths, MOO
 objects, continuous-expression matrices, or arbitrary shell arguments into the
 container.
 
+For `--counts`, supply finite, non-negative count-scale values. Observed
+integer counts and fractional RSEM `expected_count` values are supported; do
+not submit TPM, FPKM, CPM, log-transformed, or other normalized values.
+
 Require `input_type=table` and `analysis_mode=raw_counts` (the application
 defaults already resolve to those values). Consume `run_manifest.json` only
 after a zero exit status and verify its `application_interface` value is
