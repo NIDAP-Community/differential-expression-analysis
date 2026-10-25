@@ -1,0 +1,65 @@
+interface_version: 1
+application: differential-expression-analysis
+input_contract: raw-count-table
+inputs:
+  counts:
+    cli: --counts
+    required: true
+    type: path
+    formats: [csv, tsv, txt]
+    description: Gene-by-sample table of finite, non-negative count-scale values materialized by the application data layer. Observed integer counts and fractional RSEM expected_count values are supported; TPM, FPKM, CPM, and transformed values are not.
+  metadata:
+    cli: --metadata
+    required: true
+    type: path
+    formats: [csv, tsv, txt]
+    description: Sample metadata with one row per selected sample and IDs matching count-table columns.
+parameters:
+  gene_names_column:
+    cli: --gene_names_column
+    default: GeneName
+    description: Gene-identifier column in the counts table.
+  sample_names_column:
+    cli: --sample_names_column
+    default: Sample
+    description: Sample-ID column in metadata.
+  contrast_variable_columns:
+    cli: --contrast_variable_columns
+    default: Group
+    description: Metadata column defining comparison groups.
+  contrasts:
+    cli: --contrasts
+    default: B-A
+    description: Comma-separated numerator-minus-denominator comparisons.
+  covariate_columns:
+    cli: --covariate_columns
+    default: ""
+    description: Optional comma-separated fixed-effect metadata columns.
+  batch_effect_columns:
+    cli: --batch_effect_columns
+    default: auto
+    description: auto uses Batch when present; otherwise no technical batch term is added.
+  donor_variable_column:
+    cli: --donor_variable_column
+    default: ""
+    description: Optional donor identifier for genuine repeated-measures analysis.
+  write_normalization_diagnostics:
+    cli: --write_normalization_diagnostics
+    default: auto
+    description: Write raw-count normalization and voom diagnostic plots.
+outputs:
+  differential_expression:
+    path: tables/DEG_Analysis.csv
+  modeled_metadata:
+    path: tables/Sample_Metadata.csv
+  run_summary:
+    path: logs/run_summary.txt
+  run_manifest:
+    path: run_manifest.json
+  diagnostics:
+    path: figures/
+    optional: true
+constraints:
+  - analysis_mode is fixed to raw_counts.
+  - input_type is fixed to table.
+  - MOO and continuous-expression inputs are not accepted by this application.

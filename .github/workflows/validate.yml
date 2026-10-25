@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: NIDAP-Community/OMIX
-          ref: 0ea6223129de6d98d69469027c19fa1887b59f6a
+          ref: e95a2bb737fa527294aa515a8978702fcdb7b295
           path: canonical-omix
       - name: Verify pinned scientific export
         run: |

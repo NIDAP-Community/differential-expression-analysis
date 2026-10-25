@@ -1,32 +1,120 @@
 # Differential Expression Analysis
 
-Portable raw-count differential-expression component derived from canonical
-OMIX DEG Analysis. It accepts declared integer counts and aligned metadata;
-see the canonical source record and preflight before integrating it with an
-orchestrator.
+A containerized R application for differential expression from a tabular raw-count matrix and matching sample metadata. It is designed for command-line, HPC, and OncoChat use: the application layer materializes bounded files under `/data`, the container writes results to `/output`, and no database credentials enter the image.
 
-## Status
+The application intentionally supports only raw count-scale values: observed integer counts and fractional RSEM `expected_count` values are accepted. The canonical OMIX module also has MOO and continuous-expression modes, but those are not part of this portable application contract.
 
-Local candidate only. It has passed a synthetic raw-count container smoke test
-but is not published or OncoChat-enabled.
+## Quick start
 
-## Input and output
+Build a local AMD64 image:
 
-Stage `counts` and `metadata` under read-only `/data`, then invoke the image
-with explicit paths and a declared design. Raw counts are valid only for
-`analysis_mode=raw_counts`; continuous modes require their declared artifacts.
+```bash
+container/build_docker.sh differential-expression-analysis:local
+```
+
+Run it with read-only input and a writable output directory:
 
 ```bash
 docker run --rm --platform linux/amd64 \
-  -v "$PWD/input:/data:ro" -v "$PWD/results:/output" \
+  -v /path/to/input:/data:ro \
+  -v /path/to/output:/output \
   differential-expression-analysis:local \
-  --counts /data/counts.tsv --metadata /data/metadata.tsv \
-  --gene_names_column GeneName --sample_names_column Sample \
-  --contrast_variable_columns Group --contrasts B-A --output_dir /output
+  --counts /data/counts.tsv \
+  --metadata /data/metadata.tsv \
+  --gene_names_column GeneName \
+  --sample_names_column Sample \
+  --contrast_variable_columns Group \
+  --contrasts B-A \
+  --output_dir /output
 ```
 
-The canonical flat files remain at the result root for command-line
-compatibility. The application adapter also copies stable handoff artifacts to
-`tables/`, `figures/` when diagnostics are produced, and `logs/`, and writes
-`RUN_METADATA.md` plus `run_manifest.json`. See `docs/` for the integration
-boundary.
+`B-A` means the reported log fold change is the group `B` estimate minus group `A`.
+
+## Input contract
+
+`--counts` is a CSV, TSV, or TXT table with genes in rows, a gene-identifier column, and one column per sample. Values must be finite, non-negative count-scale values: observed integer counts and fractional RSEM `expected_count` values are accepted. Do not supply TPM, FPKM, CPM, normalized, log-transformed, Harmony-corrected, or SCTransform values.
+
+```text
+GeneName  A1  A2  B1  B2
+Gene1     80  82 160 158
+Gene2     90  88 170 168
+```
+
+`--metadata` is a CSV, TSV, or TXT table with one row per sample. Values in `--sample_names_column` must match count-table sample columns.
+
+```text
+Sample  Group  Batch
+A1      A      1
+A2      A      1
+B1      B      2
+B2      B      2
+```
+
+## Parameters
+
+| Parameter | Default | Purpose |
+| --- | --- | --- |
+| `--counts` | required | Tabular gene-by-sample raw count-scale values, including RSEM `expected_count`. |
+| `--metadata` | required | Matching sample metadata. |
+| `--gene_names_column` | `GeneName` | Gene-identifier column in counts. |
+| `--sample_names_column` | `Sample` | Sample-ID column in metadata. |
+| `--contrast_variable_columns` | `Group` | Metadata column defining comparison groups. |
+| `--contrasts` | `B-A` | Comma-separated numerator-minus-denominator contrasts. |
+| `--covariate_columns` | empty | Optional fixed-effect metadata columns. |
+| `--batch_effect_columns` | `auto` | Uses `Batch` when present; otherwise no batch term. |
+| `--donor_variable_column` | empty | Optional donor column for true repeated measures. |
+| `--write_normalization_diagnostics` | `auto` | Write raw-count normalization and voom diagnostic plots. |
+| `--output_dir` | `results` | Writable result directory. |
+
+`--input_type` is fixed to `table` and `--analysis_mode` is fixed to `raw_counts`. The application rejects MOO, pseudobulk-manifest, and continuous-expression inputs so that its behavior is reproducible across OncoChat and standalone runs.
+
+## Outputs
+
+The canonical OMIX files remain at the output root for command-line compatibility. The adapter also creates stable application paths for orchestration.
+
+| Stable path | Contents |
+| --- | --- |
+| `tables/DEG_Analysis.csv` | Differential-expression statistics and modeled expression values. |
+| `tables/Sample_Metadata.csv` | Metadata for modeled samples. |
+| `logs/run_summary.txt` | Model, normalization, and variance-model provenance. |
+| `logs/sessionInfo.txt` | R session information for the completed container run. |
+| `figures/` | Normalization and voom diagnostics, when requested. |
+| `run_manifest.json` | Machine-readable status, arguments, and artifact paths. |
+| `RUN_METADATA.md` | Human-readable run handoff. |
+
+Raw p-values and multiple-testing-adjusted values are retained in the differential-expression table. This application is for exploratory research, not clinical decision support.
+
+## OncoChat integration
+
+The application-facing field contract is [schemas/application_interface.yml](schemas/application_interface.yml). The adapter must:
+
+1. Materialize only the selected raw-count table and metadata under `/data`.
+2. Invoke a released image by immutable digest with `/data` mounted read-only and `/output` writable.
+3. Check for a zero exit status, then consume `run_manifest.json` and stable `tables/`, `figures/`, and `logs/` paths.
+
+See [docs/oncochat_adapter_contract.md](docs/oncochat_adapter_contract.md) for the boundary. The canonical OMIX source and its SHA-256 record are retained in [OMIX_MODULE_SOURCE.md](OMIX_MODULE_SOURCE.md).
+
+## Validation
+
+```bash
+container/build_docker.sh differential-expression-analysis:local
+container/smoke_test.sh differential-expression-analysis:local
+container/parity_test.sh differential-expression-analysis:local
+```
+
+The parity test confirms that the application adapter does not change canonical differential-expression tables or modeled metadata.
+
+## Container and HPC use
+
+The image targets `linux/amd64`. Once a versioned GHCR image is published, it can also be pulled into Apptainer or Singularity:
+
+```bash
+apptainer pull differential-expression-analysis.sif \
+  docker://ghcr.io/nidap-community/differential-expression-analysis:VERSION
+```
+
+Bind input to `/data` and results to `/output` exactly as in the Docker example.
+
+## Provenance
+
+Canonical OMIX science is intentionally preserved byte-for-byte in `R/OMIX_DEG_Analysis.R` and `scripts/run_deg_analysis.R`. The standalone adapter is limited to input validation, execution, and stable artifact handoff; it does not alter model settings or calculated values. See [docs/architecture.md](docs/architecture.md).

@@ -1,0 +1,7 @@
+.git
+.github
+docs
+results
+output
+*.Rproj
+.DS_Store
