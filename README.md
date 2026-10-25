@@ -1,6 +1,9 @@
 # Differential Expression Analysis
 
-A containerized R application for differential expression from a tabular raw-count matrix and matching sample metadata. It is designed for command-line, HPC, and OncoChat use: the application layer materializes bounded files under `/data`, the container writes results to `/output`, and no database credentials enter the image.
+A containerized R application for differential expression from a tabular
+raw-count matrix and matching sample metadata. It runs from the command line,
+in Docker, or on HPC with explicit input tables and a writable output
+directory.
 
 The application intentionally supports only raw count-scale values: observed integer counts and fractional RSEM `expected_count` values are accepted. The canonical OMIX module also has MOO and continuous-expression modes, but those are not part of this portable application contract.
 
@@ -66,11 +69,15 @@ B2      B      2
 | `--write_normalization_diagnostics` | `auto` | Write raw-count normalization and voom diagnostic plots. |
 | `--output_dir` | `results` | Writable result directory. |
 
-`--input_type` is fixed to `table` and `--analysis_mode` is fixed to `raw_counts`. The application rejects MOO, pseudobulk-manifest, and continuous-expression inputs so that its behavior is reproducible across OncoChat and standalone runs.
+`--input_type` is fixed to `table` and `--analysis_mode` is fixed to
+`raw_counts`. The application rejects MOO, pseudobulk-manifest, and
+continuous-expression inputs so its behavior is reproducible across supported
+execution environments.
 
 ## Outputs
 
-The canonical OMIX files remain at the output root for command-line compatibility. The adapter also creates stable application paths for orchestration.
+The canonical OMIX files remain at the output root for command-line
+compatibility. The tool also creates stable result paths for downstream review.
 
 | Stable path | Contents |
 | --- | --- |
@@ -83,16 +90,6 @@ The canonical OMIX files remain at the output root for command-line compatibilit
 | `RUN_METADATA.md` | Human-readable run handoff. |
 
 Raw p-values and multiple-testing-adjusted values are retained in the differential-expression table. This application is for exploratory research, not clinical decision support.
-
-## OncoChat integration
-
-The application-facing field contract is [schemas/application_interface.yml](schemas/application_interface.yml). The adapter must:
-
-1. Materialize only the selected raw-count table and metadata under `/data`.
-2. Invoke a released image by immutable digest with `/data` mounted read-only and `/output` writable.
-3. Check for a zero exit status, then consume `run_manifest.json` and stable `tables/`, `figures/`, and `logs/` paths.
-
-See [docs/oncochat_adapter_contract.md](docs/oncochat_adapter_contract.md) for the boundary. The canonical OMIX source and its SHA-256 record are retained in [OMIX_MODULE_SOURCE.md](OMIX_MODULE_SOURCE.md).
 
 ## Validation
 
