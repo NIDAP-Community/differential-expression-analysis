@@ -4,10 +4,11 @@ FROM ${BASE_IMAGE}
 WORKDIR /app
 COPY R/ R/
 COPY scripts/ scripts/
+COPY entrypoint.R ./
 COPY schemas/ schemas/
 COPY test_data/ test_data/
 COPY module.yml renv.lock ./
 RUN mkdir -p /data /output && useradd --create-home --uid 10001 --shell /usr/sbin/nologin deg && chown --recursive deg:deg /app /data /output
 USER deg
-ENTRYPOINT ["Rscript", "--vanilla", "/app/scripts/run_deg_analysis.R"]
+ENTRYPOINT ["Rscript", "--vanilla", "/app/entrypoint.R"]
 CMD ["--help"]

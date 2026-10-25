@@ -12,8 +12,21 @@ but is not published or OncoChat-enabled.
 
 ## Input and output
 
-Stage `counts` and `metadata` under read-only `/data`, invoke the bounded
-canonical CLI, and collect `DEG_Analysis.csv`, `Sample_Metadata.csv`, optional
-normalization diagnostics, and `run_summary.txt` from `/output`. Raw counts
-are valid only for `analysis_mode=raw_counts`; continuous modes require their
-declared artifacts.
+Stage `counts` and `metadata` under read-only `/data`, then invoke the image
+with explicit paths and a declared design. Raw counts are valid only for
+`analysis_mode=raw_counts`; continuous modes require their declared artifacts.
+
+```bash
+docker run --rm --platform linux/amd64 \
+  -v "$PWD/input:/data:ro" -v "$PWD/results:/output" \
+  differential-expression-analysis:local \
+  --counts /data/counts.tsv --metadata /data/metadata.tsv \
+  --gene_names_column GeneName --sample_names_column Sample \
+  --contrast_variable_columns Group --contrasts B-A --output_dir /output
+```
+
+The canonical flat files remain at the result root for command-line
+compatibility. The application adapter also copies stable handoff artifacts to
+`tables/`, `figures/` when diagnostics are produced, and `logs/`, and writes
+`RUN_METADATA.md` plus `run_manifest.json`. See `docs/` for the integration
+boundary.
