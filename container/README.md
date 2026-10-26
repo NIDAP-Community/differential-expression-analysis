@@ -23,10 +23,10 @@ The smoke test checks the public entrypoint and stable result bundle. The
 parity test confirms that the adapter preserves the canonical differential-
 expression table and modeled metadata.
 
-The approved `v0.1.0` application image is:
+The approved `v0.1.1` application image is:
 
 ```text
-ghcr.io/nidap-community/differential-expression-analysis@sha256:0d4e7ba82a8b44c339e9fc2292650a8a5968683bc8c262da7dd70ce15f3e63af
+ghcr.io/nidap-community/differential-expression-analysis@sha256:b78e452318131927b5a140e399d59350e1834d1f63239376f18637ebb0568854
 ```
 
 Use the digest for deployment. `run_docker.sh` and `run_apptainer.sh` provide

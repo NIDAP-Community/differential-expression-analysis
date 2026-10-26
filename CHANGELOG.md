@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here.
 
+## 2026-10-25 — v0.1.1
+
+- Published an AMD64 application image with immutable digest
+  `sha256:b78e452318131927b5a140e399d59350e1834d1f63239376f18637ebb0568854`.
+- Added documented Docker and Apptainer/Singularity launch paths, a public
+  smoke/parity validation entry point, container-contract documentation, and
+  an MIT license.
+- Included applicable documentation and launch helpers in the OCI image.
+- Kept the byte-preserved canonical OMIX science, raw-count/RSEM contract, and
+  user-visible model defaults unchanged.
+
 ## 2026-10-25 — v0.1.0
 
 - Established the standalone Container-as-a-Function application boundary for

@@ -8,13 +8,13 @@ credential, host path, or arbitrary shell fragment from an application caller.
 ## Validated release
 
 ```text
-ghcr.io/nidap-community/differential-expression-analysis@sha256:0d4e7ba82a8b44c339e9fc2292650a8a5968683bc8c262da7dd70ce15f3e63af
+ghcr.io/nidap-community/differential-expression-analysis@sha256:b78e452318131927b5a140e399d59350e1834d1f63239376f18637ebb0568854
 ```
 
-This approved `v0.1.0` image was built from source commit
-`10f463baebc5bd58429973e6ef4bb0f7ffdab969` for `linux/amd64`. It uses the
+This approved `v0.1.1` image was built from source commit
+`78190ad26bf2a6be4f0e4074bd4f275f97ee3575` for `linux/amd64`. It uses the
 pinned OMIX R-statistics base image recorded in `OMIX_MODULE_SOURCE.md`. Use
-the digest for reproducible execution; `v0.1.0` is a readable release tag, and
+the digest for reproducible execution; `v0.1.1` is a readable release tag, and
 `latest` is not a deployment identity.
 
 ## Filesystem and process boundary

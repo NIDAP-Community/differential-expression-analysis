@@ -10,12 +10,12 @@ The application intentionally supports only raw count-scale values: observed int
 ## Validated release
 
 ```text
-ghcr.io/nidap-community/differential-expression-analysis@sha256:0d4e7ba82a8b44c339e9fc2292650a8a5968683bc8c262da7dd70ce15f3e63af
+ghcr.io/nidap-community/differential-expression-analysis@sha256:b78e452318131927b5a140e399d59350e1834d1f63239376f18637ebb0568854
 ```
 
-This approved `v0.1.0` image was built for `linux/amd64` from validated source
-commit `10f463baebc5bd58429973e6ef4bb0f7ffdab969`. Use the digest for
-reproducible deployment; `v0.1.0` is a readable release tag and `latest` is
+This approved `v0.1.1` image was built for `linux/amd64` from validated source
+commit `78190ad26bf2a6be4f0e4074bd4f275f97ee3575`. Use the digest for
+reproducible deployment; `v0.1.1` is a readable release tag and `latest` is
 not a deployment identity.
 
 ## Quick start

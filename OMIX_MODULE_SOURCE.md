@@ -10,3 +10,9 @@ Module version/interface: `0.4.4` / `2`.
 | `schemas/interface.yml` | `9a004fa4cdf22c4d1160c1008d2e14875f1a005a8dbc7621f2d6763485cc4cca` |
 
 Runtime: `ghcr.io/nidap-community/omix-r-statistics@sha256:1325722877fec5167d171aa766ddf7bbfd056e4999bf40fd8c1eabee495da667`.
+
+## Application release record
+
+| Application release | Source commit | Immutable OCI image |
+| --- | --- | --- |
+| `v0.1.1` | `78190ad26bf2a6be4f0e4074bd4f275f97ee3575` | `ghcr.io/nidap-community/differential-expression-analysis@sha256:b78e452318131927b5a140e399d59350e1834d1f63239376f18637ebb0568854` |
