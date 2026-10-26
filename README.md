@@ -7,6 +7,17 @@ directory.
 
 The application intentionally supports only raw count-scale values: observed integer counts and fractional RSEM `expected_count` values are accepted. The canonical OMIX module also has MOO and continuous-expression modes, but those are not part of this portable application contract.
 
+## Validated release
+
+```text
+ghcr.io/nidap-community/differential-expression-analysis@sha256:0d4e7ba82a8b44c339e9fc2292650a8a5968683bc8c262da7dd70ce15f3e63af
+```
+
+This approved `v0.1.0` image was built for `linux/amd64` from validated source
+commit `10f463baebc5bd58429973e6ef4bb0f7ffdab969`. Use the digest for
+reproducible deployment; `v0.1.0` is a readable release tag and `latest` is
+not a deployment identity.
+
 ## Quick start
 
 Build a local AMD64 image:
@@ -32,6 +43,10 @@ docker run --rm --platform linux/amd64 \
 ```
 
 `B-A` means the reported log fold change is the group `B` estimate minus group `A`.
+
+The same command can use the approved image digest in place of the local tag.
+For convenience, `container/run_docker.sh <image> <data_dir> <output_dir> ...`
+creates the same `/data` and `/output` mounts.
 
 ## Input contract
 
@@ -103,7 +118,7 @@ The parity test confirms that the application adapter does not change canonical 
 
 ## Container and HPC use
 
-The image targets `linux/amd64`. Once a versioned GHCR image is published, it can also be pulled into Apptainer or Singularity:
+The published image targets `linux/amd64` and can be pulled into Apptainer or Singularity:
 
 ```bash
 apptainer pull differential-expression-analysis.sif \
@@ -111,6 +126,10 @@ apptainer pull differential-expression-analysis.sif \
 ```
 
 Bind input to `/data` and results to `/output` exactly as in the Docker example.
+`container/run_apptainer.sh` supplies the equivalent launch contract once the
+OCI image has been converted to `.sif`. See
+[docs/container_contract.md](docs/container_contract.md) for the complete
+filesystem, process, and provenance contract.
 
 ## Provenance
 

@@ -47,3 +47,19 @@ keeping the published container tied to a validated source commit.
 
 **Consequences:** Do not use mutable tags as deployment provenance. Record the
 immutable GHCR digest in versioned release notes after explicit publication.
+
+## 2026-10-25 — Application runtime helpers and validation layout
+
+**Decision:** Keep the stable adapter entrypoint at the repository root and
+provide Docker/Apptainer launch helpers in `container/`; retain test logic in
+`container/` and expose it through `tests/run_container_checks.sh`.
+
+**Rationale:** The root entrypoint is the only application-owned R
+orchestration code. The scientific implementation stays byte-preserved under
+`R/` and `scripts/`, while the helpers make the same `/data` and `/output`
+contract usable in Docker, Apptainer, and CI without duplicating test logic.
+
+**Consequences:** No `src/` directory is needed unless a future adapter-owned
+helper has a stable implementation role. The named validation entry point and
+`docs/container_contract.md` are the repository-shape evidence for this
+single-entrypoint application.

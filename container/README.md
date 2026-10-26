@@ -22,3 +22,13 @@ container/parity_test.sh differential-expression-analysis:local
 The smoke test checks the public entrypoint and stable result bundle. The
 parity test confirms that the adapter preserves the canonical differential-
 expression table and modeled metadata.
+
+The approved `v0.1.0` application image is:
+
+```text
+ghcr.io/nidap-community/differential-expression-analysis@sha256:0d4e7ba82a8b44c339e9fc2292650a8a5968683bc8c262da7dd70ce15f3e63af
+```
+
+Use the digest for deployment. `run_docker.sh` and `run_apptainer.sh` provide
+equivalent `/data` read-only and `/output` writable mounts for Docker and HPC
+execution. The full contract is in [../docs/container_contract.md](../docs/container_contract.md).

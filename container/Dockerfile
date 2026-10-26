@@ -7,7 +7,9 @@ COPY scripts/ scripts/
 COPY entrypoint.R ./
 COPY schemas/ schemas/
 COPY test_data/ test_data/
-COPY module.yml renv.lock ./
+COPY container/ container/
+COPY docs/ docs/
+COPY README.md LICENSE CHANGELOG.md OMIX_MODULE_SOURCE.md module.yml renv.lock ./
 RUN mkdir -p /data /output && useradd --create-home --uid 10001 --shell /usr/sbin/nologin deg && chown --recursive deg:deg /app /data /output
 ARG VCS_REF=unknown
 ARG BUILD_DATE=unknown

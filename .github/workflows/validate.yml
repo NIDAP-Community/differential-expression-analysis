@@ -27,5 +27,4 @@ jobs:
           cmp schemas/interface.yml canonical-omix/modules/OMIX-DEG-Analysis/schemas/interface.yml
           cmp module.yml canonical-omix/modules/OMIX-DEG-Analysis/module.yml
       - run: container/build_docker.sh differential-expression-analysis:ci
-      - run: container/smoke_test.sh differential-expression-analysis:ci
-      - run: container/parity_test.sh differential-expression-analysis:ci
+      - run: tests/run_container_checks.sh differential-expression-analysis:ci
